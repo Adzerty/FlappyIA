@@ -17,15 +17,43 @@ void setup() {
 
   //flap.addNeuron(new Neuron((int)random(-100,100), (int)random(-100,100), 30));
 
+
   /*
   generateNewPipes(300);
-  generateNewPipes(600);
-  for (int i = 0; i<150; i++) {
-    generateNewPipes(width + (i* 300));
-  }
-  */
+   generateNewPipes(600);
+   for (int i = 0; i<150; i++) {
+   generateNewPipes(width + (i* 300));
+   }
+   */
 
+  parseFile();
 }
+
+void parseFile() {
+  // Open the file from the createWriter() example
+  BufferedReader reader = createReader("pipetrainingset.dat");
+  String line = null;
+  try {
+    while ((line = reader.readLine()) != null) {
+      String[] pieces = split(line, TAB);
+      int x = int(pieces[0]);
+      int y = int(pieces[1]);
+      int w = int(pieces[2]);
+      int h = int(pieces[3]);
+
+      generateNewPipe(x, y, w, h);
+    }
+    reader.close();
+  }
+  catch (IOException e) {
+    e.printStackTrace();
+  }
+}
+
+void generateNewPipe(int x, int y, int w, int h) {
+  pipes.add(new Pipe(new PVector(x, y), w, h));
+}
+
 
 void generateNewPipes(int x) {
 
@@ -34,8 +62,6 @@ void generateNewPipes(int x) {
 
   pipes.add(new Pipe(new PVector(x, 0), PIPE_WIDTH, pipeHeight1));
   pipes.add(new Pipe(new PVector(x, height - pipeHeight2), PIPE_WIDTH, pipeHeight2));
-  
-  addScore();
 }
 
 void draw() {
