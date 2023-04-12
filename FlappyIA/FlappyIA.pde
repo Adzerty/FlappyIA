@@ -101,10 +101,8 @@ void draw() {
 
 
   if (removed) {
-
     pipes.removeAll(pipesToRemove);
     pipesToRemove.clear();
-    //generateNewPipes(width);
   }
 
   fill(0, 200, 200);
@@ -122,7 +120,9 @@ void end() {
   }
   println("GENERATION "+generation +" ETEINTE !");
   println("SCORE MAX " + bestFlap.score);
-  
+
+  println("Sauvegarde du meilleur " + bestFlap.score);
+  saveJSONObject(bestFlap.toJson(), "data/best"+generation+".json");
   exit();
 }
 

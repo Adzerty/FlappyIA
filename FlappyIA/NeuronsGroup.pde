@@ -1,15 +1,15 @@
 class NeuronsGroup extends Sensor {
 
-  ArrayList<Neuron> neurons = new ArrayList<>();
+  ArrayList<Sensor> sensors = new ArrayList<>();
   boolean active = false;
 
-  public NeuronsGroup(ArrayList<Neuron> n) {
-    neurons = n;
+  public NeuronsGroup(ArrayList<Sensor> s) {
+    sensors = s;
   }
 
   void isActive() {
-    for (Neuron n : neurons) {
-      if (n.active == false) {
+    for (Sensor s : sensors) {
+      if (s.active == false) {
         active = false;
         return;
       }
@@ -21,8 +21,8 @@ class NeuronsGroup extends Sensor {
   @Override
     public void check(ArrayList<Pipe> pipes) {
     active = false;
-    for (Neuron n : neurons) {
-      n.check(pipes);
+    for (Sensor s : sensors) {
+      s.check(pipes);
     }
     isActive();
   }

@@ -18,7 +18,11 @@ class Flappy {
 
   boolean dead = false;
 
-  ArrayList<Neuron> neuralNetwork =  new ArrayList<>();
+  ArrayList<Sensor> neuralNetwork =  new ArrayList<>();
+
+  public Flappy(JSONObject j) {
+  }
+
 
   public Flappy(PVector p) {
     this.pos = p;
@@ -61,8 +65,8 @@ class Flappy {
 
 
     if (! dead) {
-      for (Neuron n : neuralNetwork) {
-        n.show();
+      for (Sensor n : neuralNetwork) {
+        if (n instanceof Neuron)((Neuron)n).show();
       }
     }
   }
@@ -86,7 +90,7 @@ class Flappy {
         }
       }
 
-      for (Neuron n : neuralNetwork) {
+      for (Sensor n : neuralNetwork) {
         n.check(pipes);
       }
     }
@@ -113,5 +117,61 @@ class Flappy {
 
   public void addScore() {
     score ++;
+  }
+
+
+
+  //SERIALIZATION
+  JSONObject toJson() {
+    JSONObject json = new JSONObject();
+    JSONArray sensors = new JSONArray();
+
+    int i = 0;
+    for (Sensor s : neuralNetwork) {
+      JSONObject sensor = new JSONObject();
+      if (s instanceof Neuron) {
+        addNeuronToJson(sensor, (Neuron) s);
+      } else {
+        if (s instanceof AirNeuron) {
+          addAirNeuronToJson(sensor, (AirNeuron) s);
+        } else {
+          addNeuronsGroupToJson(sensor, (NeuronsGroup) s);
+        }
+      }
+
+      sensors.setJSONObject(i++, sensor);
+    }
+    json.setJSONArray("sensors", sensors);
+    return json;
+  }
+
+  private void addNeuronToJson(JSONObject j, Neuron n) {
+    j.setString("type", "N");
+    j.setInt("x", n.xOffset);
+    j.setInt("y", n.yOffset);
+    j.setInt("size", n.size);
+  }
+  private void addAirNeuronToJson(JSONObject j, AirNeuron a) {
+    j.setString("type", "A");
+    j.setInt("x", a.xOffset);
+    j.setInt("y", a.yOffset);
+    j.setInt("size", a.size);
+  }
+  private void addNeuronsGroupToJson(JSONObject j, NeuronsGroup g) {
+    j.setString("type", "G");
+    JSONArray sensors = new JSONArray();
+    int i = 0;
+    for (Sensor s : g.sensors) {
+      JSONObject sensor = new JSONObject();
+
+      if (s instanceof Neuron) {
+        addNeuronToJson(sensor, (Neuron) s);
+      } else {
+        addAirNeuronToJson(sensor, (AirNeuron) s);
+      }
+
+      sensors.setJSONObject(i++, sensor);
+    }
+    j.setJSONArray("sensors", sensors);
   }
 }
