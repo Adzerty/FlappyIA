@@ -11,7 +11,10 @@ class NeuronsGroup extends Sensor {
   }
 
   void isActive() {
+    
+  
     for (Sensor s : sensors) {
+      println(s.active);
       if (s.active == false) {
         active = false;
         return;

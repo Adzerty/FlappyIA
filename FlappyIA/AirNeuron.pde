@@ -6,12 +6,15 @@ class AirNeuron extends Sensor {
 
   int size;
 
-  public AirNeuron(int x, int y, int s, Flappy f) {
+  boolean fromGroup = false;
+  
+  public AirNeuron(int x, int y, int s, Flappy f, boolean fromGroup) {
     xOffset = x;
     yOffset = y;
     this.size = s;
     active = false;
     flap = f;
+    this.fromGroup = fromGroup;
   }
 
   @Override
@@ -49,6 +52,8 @@ class AirNeuron extends Sensor {
 
   public void activate() {
     this.active = true;
-    flap.jump();
+    if (! fromGroup) {
+      flap.jump();
+    }
   }
 }

@@ -196,7 +196,7 @@ class Flappy {
 
 
   private void addNeuronFromJson(JSONObject j) {
-    Neuron n = new Neuron(j.getInt("x"), j.getInt("y"), j.getInt("size"), this);
+    Neuron n = new Neuron(j.getInt("x"), j.getInt("y"), j.getInt("size"), this, false);
     this.neuralNetwork.add(n);
   }
   private void addAirNeuronFromJson(JSONObject j) {

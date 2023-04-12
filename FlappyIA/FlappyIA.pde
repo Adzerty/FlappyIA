@@ -1,5 +1,5 @@
 int generation = 0;
-int POP_SIZE = 500;
+int POP_SIZE = 1;
 
 Flappy[] flappies;
 
@@ -26,20 +26,20 @@ void setup() {
     flappies[i] = new Flappy(new PVector(100, 300));
 
     float r = random(0, 1);
-    if (r < 0.33) {
-      flappies[i].addSensor(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+    if (r < -0.33) {
+      flappies[i].addSensor(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], false));
     } else {
-      if (r < 0.66) {
-        flappies[i].addSensor(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+      if (r < -0.66) {
+        flappies[i].addSensor(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], false));
       } else {
         ArrayList<Sensor> s = new ArrayList<>();
 
         for (int j = 0; j< random(5); j++) {
           float r2 = random(0, 1);
-          if (r2 < 0.5) {
-            s.add(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+          if (r2 < 1) {
+            s.add(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], true));
           } else {
-            s.add(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+            s.add(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], true));
           }
 
           NeuronsGroup g = new NeuronsGroup(s, flappies[i]);
@@ -59,7 +59,7 @@ void setup() {
    }
    */
 
-  parseFile();
+  //parseFile();
 }
 
 void parseFile() {

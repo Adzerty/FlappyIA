@@ -7,12 +7,15 @@ class Neuron extends Sensor {
 
   int size;
 
-  public Neuron(int x, int y, int s, Flappy f) {
+  boolean fromGroup = false;
+
+  public Neuron(int x, int y, int s, Flappy f, boolean fromGroup) {
     xOffset = x;
     yOffset = y;
     this.size = s;
     active = false;
     flap = f;
+    this.fromGroup = fromGroup;
   }
 
   void show() {
@@ -49,6 +52,8 @@ class Neuron extends Sensor {
 
   public void activate() {
     this.active = true;
-    flap.jump();
+    if (! fromGroup) {
+      flap.jump();
+    }
   }
 }
