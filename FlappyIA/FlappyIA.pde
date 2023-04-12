@@ -1,5 +1,5 @@
 int generation = 0;
-int POP_SIZE = 100;
+int POP_SIZE = 500;
 
 Flappy[] flappies;
 
@@ -13,16 +13,42 @@ ArrayList<Pipe> pipesToRemove = new ArrayList<>();
 
 PrintWriter output;
 
+JSONObject json;
+
 void setup() {
   size(800, 600);
 
-
+  json = loadJSONObject("best0.json");
 
   flappies = new Flappy[POP_SIZE];
 
   for (int i = 0; i<POP_SIZE; i++) {
     flappies[i] = new Flappy(new PVector(100, 300));
-    flappies[i].addNeuron(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+
+    float r = random(0, 1);
+    if (r < 0.33) {
+      flappies[i].addSensor(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+    } else {
+      if (r < 0.66) {
+        flappies[i].addSensor(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+      } else {
+        ArrayList<Sensor> s = new ArrayList<>();
+
+        for (int j = 0; j< random(5); j++) {
+          float r2 = random(0, 1);
+          if (r2 < 0.5) {
+            s.add(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+          } else {
+            s.add(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+          }
+
+          NeuronsGroup g = new NeuronsGroup(s, flappies[i]);
+          flappies[i].addSensor(g);
+        }
+      }
+
+      //flappies[i] = new Flappy(new PVector(100, 300), json);
+    }
   }
 
   /*

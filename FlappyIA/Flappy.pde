@@ -20,7 +20,26 @@ class Flappy {
 
   ArrayList<Sensor> neuralNetwork =  new ArrayList<>();
 
-  public Flappy(JSONObject j) {
+  public Flappy(PVector p, JSONObject j) {
+    this.pos = p;
+    this.vel = new PVector();
+    this.acc = new PVector();
+
+    //Creation des neurones
+    JSONArray sensors = j.getJSONArray("sensors");
+    for (int i = 0; i<sensors.size(); i++) {
+      String type = sensors.getJSONObject(i).getString("type");
+
+      if (type.equals("N")) {
+        addNeuronFromJson(sensors.getJSONObject(i));
+      } else {
+        if (type.equals("A")) {
+          addAirNeuronFromJson(sensors.getJSONObject(i));
+        } else {
+          addNeuronsGroupFromJson(sensors.getJSONObject(i));
+        }
+      }
+    }
   }
 
 
@@ -66,7 +85,7 @@ class Flappy {
 
     if (! dead) {
       for (Sensor n : neuralNetwork) {
-        if (n instanceof Neuron)((Neuron)n).show();
+        n.show();
       }
     }
   }
@@ -111,8 +130,8 @@ class Flappy {
     }
   }
 
-  public void addNeuron(Neuron n) {
-    this.neuralNetwork.add(n);
+  public void addSensor(Sensor s) {
+    this.neuralNetwork.add(s);
   }
 
   public void addScore() {
@@ -173,5 +192,15 @@ class Flappy {
       sensors.setJSONObject(i++, sensor);
     }
     j.setJSONArray("sensors", sensors);
+  }
+
+
+  private void addNeuronFromJson(JSONObject j) {
+    Neuron n = new Neuron(j.getInt("x"), j.getInt("y"), j.getInt("size"), this);
+    this.neuralNetwork.add(n);
+  }
+  private void addAirNeuronFromJson(JSONObject j) {
+  }
+  private void addNeuronsGroupFromJson(JSONObject j) {
   }
 }

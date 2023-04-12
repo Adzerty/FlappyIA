@@ -1,4 +1,4 @@
-class AirNeuron extends Neuron {
+class AirNeuron extends Sensor {
 
   //positons offset based on flappy pos
   int xOffset;
@@ -7,7 +7,21 @@ class AirNeuron extends Neuron {
   int size;
 
   public AirNeuron(int x, int y, int s, Flappy f) {
-    super(x, y, s, f);
+    xOffset = x;
+    yOffset = y;
+    this.size = s;
+    active = false;
+    flap = f;
+  }
+
+  @Override
+    public void show() {
+    if (active) {
+      fill(255);
+    } else {
+      noFill();
+    }
+    ellipse(flap.pos.x + xOffset, flap.pos.y + yOffset, this.size, this.size);
   }
 
   @Override
