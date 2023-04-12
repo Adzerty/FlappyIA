@@ -1,5 +1,8 @@
 class Flappy {
 
+  int score = 0;
+
+
   PVector acc;
   PVector vel;
   PVector pos;
@@ -24,9 +27,8 @@ class Flappy {
   }
 
   public void jump() {
-    
+
     jumping = 10;
-    
   }
 
   public void applyGravity() {
@@ -50,14 +52,18 @@ class Flappy {
 
   public void show() {
     if (dead) {
-      fill(200, 0, 0);
+      fill(200, 0, 0, 10);
     } else {
       fill(255, 255, 0);
     }
+
     rect(pos.x, pos.y, size, size);
 
-    for (Neuron n : neuralNetwork) {
-      n.show();
+
+    if (! dead) {
+      for (Neuron n : neuralNetwork) {
+        n.show();
+      }
     }
   }
 
@@ -78,12 +84,11 @@ class Flappy {
           check(p2);
           checkScore(p2);
         }
-         }
+      }
 
-        for (Neuron n : neuralNetwork) {
-          n.check(pipes);
-        }
-     
+      for (Neuron n : neuralNetwork) {
+        n.check(pipes);
+      }
     }
   }
 
@@ -104,5 +109,9 @@ class Flappy {
 
   public void addNeuron(Neuron n) {
     this.neuralNetwork.add(n);
+  }
+
+  public void addScore() {
+    score ++;
   }
 }

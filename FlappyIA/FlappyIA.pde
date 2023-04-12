@@ -1,22 +1,29 @@
-Flappy flap;
+int generation = 0;
+int POP_SIZE = 100;
+
+Flappy[] flappies;
 
 int PIPE_WIDTH = 75;
-int PIPE_SPEED = 15;
+int PIPE_SPEED = 8;
 int PIPE_SPACE = 250;
 
 ArrayList<Pipe> pipes = new ArrayList<>();
 ArrayList<Pipe> pipesToRemove = new ArrayList<>();
 
-int score = 0;
 
 PrintWriter output;
 
 void setup() {
   size(800, 600);
-  flap = new Flappy(new PVector(100, 300));
 
-  //flap.addNeuron(new Neuron((int)random(-100,100), (int)random(-100,100), 30));
 
+
+  flappies = new Flappy[POP_SIZE];
+
+  for (int i = 0; i<POP_SIZE; i++) {
+    flappies[i] = new Flappy(new PVector(100, 300));
+    flappies[i].addNeuron(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i]));
+  }
 
   /*
   generateNewPipes(300);
@@ -67,10 +74,19 @@ void generateNewPipes(int x) {
 void draw() {
   background(120);
 
-  flap.applyGravity();
-  flap.move();
-  flap.show();
-  flap.check(pipes);
+  int deathCount = 0;
+  for (Flappy flap : flappies) {
+    flap.applyGravity();
+    flap.move();
+    flap.show();
+    flap.check(pipes);
+
+    if (flap.dead) deathCount ++;
+  }
+
+  if (deathCount == POP_SIZE) {
+    end();
+  }
 
   boolean removed = false;
   for (Pipe p : pipes) {
@@ -92,22 +108,28 @@ void draw() {
   }
 
   fill(0, 200, 200);
-  textSize(20);
-  text("Score : " + score, 0, 20);
 }
 
 
-public void addScore() {
-  score ++;
-  if (score % 25 == 0 && PIPE_SPACE > 100) {
-    PIPE_SPACE -= 30;
+
+
+void end() {
+  Flappy bestFlap = null;
+  for (Flappy f : flappies) {
+    if (bestFlap == null || bestFlap.score < f.score) {
+      bestFlap = f;
+    }
   }
+  println("GENERATION "+generation +" ETEINTE !");
+  println("SCORE MAX " + bestFlap.score);
+  
+  exit();
 }
 
 void keyPressed() {
   if (key == CODED) {
     if (keyCode == UP) {
-      flap.jump();
+      //flap.jump();
     }
   }
 }

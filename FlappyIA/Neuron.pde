@@ -1,16 +1,18 @@
 class Neuron extends Sensor {
 
+
   //positons offset based on flappy pos
   int xOffset;
   int yOffset;
 
   int size;
 
-  public Neuron(int x, int y, int s) {
+  public Neuron(int x, int y, int s, Flappy f) {
     xOffset = x;
     yOffset = y;
     this.size = s;
     active = false;
+    flap = f;
   }
 
   void show() {
@@ -23,7 +25,7 @@ class Neuron extends Sensor {
   }
 
   @Override
-  public void check(ArrayList<Pipe> pipes) {
+    public void check(ArrayList<Pipe> pipes) {
     active = false;
     //Check world constrains
     if (flap.pos.y + yOffset > height - size || flap.pos.y + yOffset <= 0) {

@@ -6,8 +6,8 @@ class AirNeuron extends Neuron {
 
   int size;
 
-  public AirNeuron(int x, int y, int s) {
-    super(x, y, s);
+  public AirNeuron(int x, int y, int s, Flappy f) {
+    super(x, y, s, f);
   }
 
   @Override
