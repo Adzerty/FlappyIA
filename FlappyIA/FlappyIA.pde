@@ -1,10 +1,12 @@
+import java.util.Arrays;
+
 int generation = 0;
-int POP_SIZE = 1;
+int POP_SIZE = 300;
 
 Flappy[] flappies;
 
 int PIPE_WIDTH = 75;
-int PIPE_SPEED = 8;
+int PIPE_SPEED = 4;
 int PIPE_SPACE = 250;
 
 ArrayList<Pipe> pipes = new ArrayList<>();
@@ -13,12 +15,10 @@ ArrayList<Pipe> pipesToRemove = new ArrayList<>();
 
 PrintWriter output;
 
-JSONObject json;
+
 
 void setup() {
   size(800, 600);
-
-  json = loadJSONObject("best0.json");
 
   flappies = new Flappy[POP_SIZE];
 
@@ -27,19 +27,19 @@ void setup() {
 
     float r = random(0, 1);
     if (r < -0.33) {
-      flappies[i].addSensor(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], false));
+      flappies[i].addSensor(new Neuron((int)random(-100, 250), (int)random(-250, 250), 30, flappies[i], false));
     } else {
       if (r < -0.66) {
-        flappies[i].addSensor(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], false));
+        flappies[i].addSensor(new AirNeuron((int)random(-100, 250), (int)random(-250, 250), 30, flappies[i], false));
       } else {
         ArrayList<Sensor> s = new ArrayList<>();
 
         for (int j = 0; j< random(5); j++) {
           float r2 = random(0, 1);
-          if (r2 < 1) {
-            s.add(new Neuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], true));
+          if (r2 < 0.5) {
+            s.add(new Neuron((int)random(-100, 250), (int)random(-250, 250), 30, flappies[i], true));
           } else {
-            s.add(new AirNeuron((int)random(-100, 100), (int)random(-100, 100), 30, flappies[i], true));
+            s.add(new AirNeuron((int)random(-100, 250), (int)random(-250, 250), 30, flappies[i], true));
           }
 
           NeuronsGroup g = new NeuronsGroup(s, flappies[i]);
@@ -59,7 +59,7 @@ void setup() {
    }
    */
 
-  //parseFile();
+  parseFile();
 }
 
 void parseFile() {
@@ -138,18 +138,52 @@ void draw() {
 
 
 void end() {
-  Flappy bestFlap = null;
+  Arrays.sort(flappies);
+
+  println("GENERATION "+generation +" ETEINTE !");
+  println("SCORE MAX " + flappies[0].score);
+
+  for (int i = 0; i < POP_SIZE / 2; i++) {
+    saveJSONObject(flappies[i].toJson(), "data/"+generation+"/best"+i+".json");
+  }
+
+  evolve();
+
+
+  pipesToRemove.clear();
+  pipes.clear();
+  parseFile();
+}
+
+
+void evolve() {
+  JSONObject flap1, flap2;
+  flappies = new Flappy[POP_SIZE];
+
+  for (int i = 0; i < POP_SIZE / 2; i++) {
+    int r = i;
+    do {
+      r = (int)random(0, POP_SIZE/2);
+    } while (r == i);
+    
+    flap1 = loadJSONObject("data/"+generation+"/best"+i+".json");
+    flap2 = loadJSONObject("data/"+generation+"/best"+r+".json");
+    
+    flappies[i] = new Flappy(new PVector(100, 300), flap1, flap2);
+    flappies[POP_SIZE / 2 + i] = new Flappy(new PVector(100, 300), flap1);
+  }
+
+
   for (Flappy f : flappies) {
-    if (bestFlap == null || bestFlap.score < f.score) {
-      bestFlap = f;
+    float r = random(0, 1);
+    if (r < 0.3) {
+      f.mutate();
     }
   }
-  println("GENERATION "+generation +" ETEINTE !");
-  println("SCORE MAX " + bestFlap.score);
 
-  println("Sauvegarde du meilleur " + bestFlap.score);
-  saveJSONObject(bestFlap.toJson(), "data/best"+generation+".json");
-  exit();
+
+
+  generation++;
 }
 
 void keyPressed() {
