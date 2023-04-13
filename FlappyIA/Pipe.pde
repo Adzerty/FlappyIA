@@ -21,7 +21,7 @@ class Pipe {
     fill(0, 200, 0);
     rect(tL.x, tL.y, w, h);
     if (n%2 == 0) {
-      fill(0, 150, 0);
+      fill(0, 250, 120);
       textSize(42);
       text(""+(n/2), tL.x, tL.y);
     }

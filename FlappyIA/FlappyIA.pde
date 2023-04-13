@@ -12,7 +12,7 @@ int PIPE_SPACE = 250;
 
 ArrayList<Pipe> pipes = new ArrayList<>();
 ArrayList<Pipe> pipesToRemove = new ArrayList<>();
-
+ArrayList<JSONObject> densityArray = new ArrayList<>();
 
 PrintWriter output;
 
@@ -159,17 +159,25 @@ void end() {
 
 
 void evolve() {
-  JSONObject flap1, flap2;
+  JSONObject flap, flap1, flap2;
   flappies = new Flappy[POP_SIZE];
+  
+  for(int i = 0; i<POP_SIZE /2; i++){
+    flap = loadJSONObject("data/"+generation+"/best"+i+".json");
+    int flapScore = flap.getInt("score");
+    for(int j = 0; j<flapScore;j++){
+      densityArray.add(flap);
+    }
+  }
 
   for (int i = 0; i < POP_SIZE / 2; i++) {
     int r = i;
     do {
-      r = (int)random(0, POP_SIZE/2);
+      r = (int)random(0, densityArray.size());
     } while (r == i);
 
     flap1 = loadJSONObject("data/"+generation+"/best"+i+".json");
-    flap2 = loadJSONObject("data/"+generation+"/best"+r+".json");
+    flap2 = densityArray.get(r);
 
     flappies[i] = new Flappy(new PVector(100, 300), flap1, flap2);
     flappies[POP_SIZE / 2 + i] = new Flappy(new PVector(100, 300), flap1);

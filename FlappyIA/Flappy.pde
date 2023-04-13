@@ -209,6 +209,7 @@ class Flappy implements Comparable {
       sensors.setJSONObject(i++, sensor);
     }
     json.setJSONArray("sensors", sensors);
+    json.setInt("score", score);
     return json;
   }
 
