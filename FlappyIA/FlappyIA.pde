@@ -1,6 +1,7 @@
 import java.util.Arrays;
 
 int generation = 0;
+int lastScoreMax = 0;
 int POP_SIZE = 300;
 
 Flappy[] flappies;
@@ -66,6 +67,7 @@ void parseFile() {
   // Open the file from the createWriter() example
   BufferedReader reader = createReader("pipetrainingset.dat");
   String line = null;
+  int i = 1;
   try {
     while ((line = reader.readLine()) != null) {
       String[] pieces = split(line, TAB);
@@ -74,7 +76,7 @@ void parseFile() {
       int w = int(pieces[2]);
       int h = int(pieces[3]);
 
-      generateNewPipe(x, y, w, h);
+      generateNewPipe(x, y, w, h, i++);
     }
     reader.close();
   }
@@ -83,22 +85,16 @@ void parseFile() {
   }
 }
 
-void generateNewPipe(int x, int y, int w, int h) {
-  pipes.add(new Pipe(new PVector(x, y), w, h));
+void generateNewPipe(int x, int y, int w, int h, int n) {
+  pipes.add(new Pipe(new PVector(x, y), w, h, n));
 }
 
 
-void generateNewPipes(int x) {
-
-  int pipeHeight1 = (int)random(50, 350);
-  int pipeHeight2 = height - PIPE_SPACE - pipeHeight1;
-
-  pipes.add(new Pipe(new PVector(x, 0), PIPE_WIDTH, pipeHeight1));
-  pipes.add(new Pipe(new PVector(x, height - pipeHeight2), PIPE_WIDTH, pipeHeight2));
-}
 
 void draw() {
   background(120);
+
+
 
   int deathCount = 0;
   for (Flappy flap : flappies) {
@@ -132,6 +128,11 @@ void draw() {
   }
 
   fill(0, 200, 200);
+
+  fill(255,100,250);
+  textSize(20);
+  text("Génération : " + generation, 0, 20);
+  text("Dernier score max : " + lastScoreMax, 0, 40);
 }
 
 
@@ -142,6 +143,7 @@ void end() {
 
   println("GENERATION "+generation +" ETEINTE !");
   println("SCORE MAX " + flappies[0].score);
+  lastScoreMax = flappies[0].score;
 
   for (int i = 0; i < POP_SIZE / 2; i++) {
     saveJSONObject(flappies[i].toJson(), "data/"+generation+"/best"+i+".json");
@@ -165,10 +167,10 @@ void evolve() {
     do {
       r = (int)random(0, POP_SIZE/2);
     } while (r == i);
-    
+
     flap1 = loadJSONObject("data/"+generation+"/best"+i+".json");
     flap2 = loadJSONObject("data/"+generation+"/best"+r+".json");
-    
+
     flappies[i] = new Flappy(new PVector(100, 300), flap1, flap2);
     flappies[POP_SIZE / 2 + i] = new Flappy(new PVector(100, 300), flap1);
   }
