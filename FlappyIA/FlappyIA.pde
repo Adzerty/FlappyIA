@@ -162,6 +162,8 @@ void evolve() {
   JSONObject flap, flap1, flap2;
   flappies = new Flappy[POP_SIZE];
   
+  densityArray.clear();
+  
   for(int i = 0; i<POP_SIZE /2; i++){
     flap = loadJSONObject("data/"+generation+"/best"+i+".json");
     int flapScore = flap.getInt("score");
